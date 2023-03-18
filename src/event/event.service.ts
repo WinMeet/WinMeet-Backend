@@ -11,22 +11,23 @@ import { MailerService } from '@nestjs-modules/mailer';
 export class EventService {
     constructor(@InjectModel('Event') private eventModel:Model<EventInterface>, private mailService: MailerService){}
   
-    async sendMail() {
-       
-        var response = await this.mailService.sendMail({
-            to:"mrdrms06@gmail.com",
+    async sendMail(participants: string[]) {
+        for(var i=0;i<participants.length;i++) {
+        await this.mailService.sendMail({
+            to:participants[i],
             from:"emredurmus06@hotmail.com",
             subject: 'Plain Text Email ✔',
             text: 'Winmeet mailer', 
            });
-           return response;
+           //return response;
+        }
     }
     //creating event
     async createEvent(createEventDto:CreateEventDto):Promise<EventInterface>{
         const newEvent = await new this.eventModel(createEventDto)
         createEventDto.eventStartDate = new Date(createEventDto.eventStartDate);
         createEventDto.eventEndDate = new Date(createEventDto.eventEndDate);
-        this.sendMail();
+        this.sendMail(createEventDto.participants);
         return newEvent.save();
         
    

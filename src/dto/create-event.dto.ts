@@ -21,7 +21,6 @@ export class CreateEventDto{
     @IsString()    
     readonly location:string;
 
-    @IsString()
-    readonly participants:string;
+    readonly participants:string[];
 
 }
