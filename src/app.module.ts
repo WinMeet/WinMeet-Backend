@@ -18,10 +18,10 @@ import { EmailController } from './email.controller';
 
     MailerModule.forRoot({
       transport: {
-        host: 'smtp.sendgrid.net',
+        host: 'smtp.gmail.com',
         auth: {
-          user: 'apikey',
-          pass: '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',
+          user: 'cemo99@gmail.com',
+          pass: 'jbkynthdjhzbfolt',
         },
       }
     }),

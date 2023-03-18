@@ -5,17 +5,28 @@ import { EventInterface } from 'src/interface/event.interface';
 import { CreateEventDto } from 'src/dto/create-event.dto';
 import { UpdateEventDto } from 'src/dto/update-event.dto';
 import { EventSchema } from 'src/schema/event.schema';
-import { EmailController } from 'src/email.controller';
+
 import { MailerService } from '@nestjs-modules/mailer';
 @Injectable()
 export class EventService {
-    constructor(@InjectModel('Event') private eventModel:Model<EventInterface>){}
-    
+    constructor(@InjectModel('Event') private eventModel:Model<EventInterface>, private mailService: MailerService){}
+  
+    async sendMail() {
+       
+        var response = await this.mailService.sendMail({
+            to:"mrdrms06@gmail.com",
+            from:"emredurmus06@hotmail.com",
+            subject: 'Plain Text Email ✔',
+            text: 'Winmeet mailer', 
+           });
+           return response;
+    }
     //creating event
     async createEvent(createEventDto:CreateEventDto):Promise<EventInterface>{
         const newEvent = await new this.eventModel(createEventDto)
         createEventDto.eventStartDate = new Date(createEventDto.eventStartDate);
         createEventDto.eventEndDate = new Date(createEventDto.eventEndDate);
+        this.sendMail();
         return newEvent.save();
         
    
