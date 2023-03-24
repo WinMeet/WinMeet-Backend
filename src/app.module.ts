@@ -13,7 +13,7 @@ import { EmailController } from './email.controller';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb+srv://emre:123@cluster0.wqgmfoi.mongodb.net', {dbname:'WinMeetDB'}),
+    MongooseModule.forRoot('mongodb+srv://admin:muzumsu@cluster0.t49jrqs.mongodb.net/test', {dbname:'WinMeetDB'}),
     MongooseModule.forFeature([{name:'Event',schema:EventSchema}]),
 
     MailerModule.forRoot({
