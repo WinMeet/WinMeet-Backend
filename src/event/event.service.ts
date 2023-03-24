@@ -25,9 +25,9 @@ export class EventService {
     //creating event
     async createEvent(createEventDto:CreateEventDto):Promise<EventInterface>{
         const newEvent = await new this.eventModel(createEventDto)
-        createEventDto.eventStartDate = new Date(createEventDto.eventStartDate);
+        /*createEventDto.eventStartDate = new Date(createEventDto.eventStartDate);
         createEventDto.eventEndDate = new Date(createEventDto.eventEndDate);
-        this.sendMail(createEventDto.participants);
+        this.sendMail(createEventDto.participants);*/
         return newEvent.save();
         
    
