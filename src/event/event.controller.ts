@@ -25,7 +25,7 @@ export class EventController {
         }
     }
 
-    @Get()
+    @Get('/all')
     async getEvents(@Res() response) {
         try {
             const eventData = await this.eventService.getAllEvents();
