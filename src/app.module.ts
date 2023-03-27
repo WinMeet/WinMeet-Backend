@@ -21,8 +21,8 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
       transport: {
         host: 'smtp.gmail.com',
         auth: {
-          user: 'cemos005@gmail.com',
-          pass: 'jixqhvpbydcvnkvi',
+          user: '',
+          pass: '',
         },
       },
       template: {
