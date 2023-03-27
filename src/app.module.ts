@@ -10,20 +10,28 @@ import { EventController } from './event/event.controller';
 //Mailer
 import { MailerModule} from '@nestjs-modules/mailer';
 import { EmailController } from './email.controller';
-
+import { join } from 'path/posix';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb+srv://admin:muzumsu@cluster0.t49jrqs.mongodb.net/test', {dbname:'WinMeetDB'}),
+    MongooseModule.forRoot('mongodb+srv://emre:123@cluster0.wqgmfoi.mongodb.net', {dbname:'WinMeetDB'}),
     MongooseModule.forFeature([{name:'Event',schema:EventSchema}]),
 
     MailerModule.forRoot({
       transport: {
         host: 'smtp.gmail.com',
         auth: {
-          user: 'cemo99@gmail.com',
-          pass: 'jbkynthdjhzbfolt',
+          user: 'cemos005@gmail.com',
+          pass: 'jixqhvpbydcvnkvi',
         },
-      }
+      },
+      template: {
+        dir: join(__dirname, 'mails'),
+        adapter: new HandlebarsAdapter(),
+        options: {
+          strict: true,
+        },
+      },
     }),
   ],
    
