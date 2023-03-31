@@ -81,13 +81,18 @@ export class EventController {
     }
 
     @Delete('/deleteAll')
-    async deleteAllEvents(@Res() response,){
+    async deleteAllEvents(@Res() response){
         try{
+
             const deletedAllEvents = await this.eventService.deleteAllEvents()
+
+            console.dir(deletedAllEvents)
+
             return response.status(HttpStatus.OK).json({
                 message:"All Events Deleted Successfully",
                 deletedAllEvents
             })
+            
         }catch(err){
             return response.status(err.status).json(err.response)
         }       
