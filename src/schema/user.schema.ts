@@ -12,7 +12,7 @@ export class User {
     userEmail: string;
   
     @Prop()
-    userPassword: Date;
+    userPassword: string;
   }
 
   export const UserSchema = SchemaFactory.createForClass(User);
