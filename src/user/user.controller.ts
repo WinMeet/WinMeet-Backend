@@ -21,13 +21,13 @@ export class UserController {
     try {
       const newEvent = await this.eventService.createUser(CreateUserDto);
       return response.status(HttpStatus.CREATED).json({
-        message: 'Event has been created successfully',
+        message: 'User has been created successfully',
         newEvent,
       });
     } catch (err) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         statusCode: 400,
-        message: 'Error! Event not created.',
+        message: 'Error! User not created.',
         error: 'Bad request!',
       });
     }
