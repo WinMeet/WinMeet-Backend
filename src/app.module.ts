@@ -9,13 +9,14 @@ import { EventController } from './event/event.controller';
 
 //Mailer
 import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { EmailController } from './email.controller';
 import { join } from 'path/posix';
 
 @Module({
   imports: [
     MongooseModule.forRoot(
-      'mongodb+srv://emre:123@cluster0.wqgmfoi.mongodb.net',
+      'mongodb+srv://admin:muzumsu@cluster0.t49jrqs.mongodb.net/test',
       { dbname: 'WinMeetDB' },
     ),
 
