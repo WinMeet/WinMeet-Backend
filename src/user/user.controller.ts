@@ -34,7 +34,7 @@ export class UserController {
       username: data.userName,
       email: data.userEmail,
       firstName: data.userName,
-      lastName: data.userSurame,
+      lastName: data.userSurname,
       credentials: [
         {
           type: 'password',
