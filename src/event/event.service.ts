@@ -65,6 +65,16 @@ export class EventService {
     return deletedEvent;
   }
 
+  //delete all events
+  async deleteAllEvents() {
+    const deletedEvents = await this.eventModel.deleteMany({});
+    if (!deletedEvents) {
+      throw new NotFoundException('Event not found');
+    }
+
+    return deletedEvents;
+  }
+
   //update event by id
   async updateEvent(
     eventId: string,
