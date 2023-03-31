@@ -36,6 +36,7 @@
     "keycloak-connect": "^21.0.2",
     "mongod": "^2.0.0",
     "mongoose": "^7.0.3",
+    "nestjs-keycloak": "^2.1.7",
     "nodemailer": "^6.9.1",
     "passport-jwt": "^4.0.1",
     "pug": "^3.0.2",
