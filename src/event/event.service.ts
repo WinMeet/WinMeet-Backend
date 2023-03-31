@@ -33,7 +33,7 @@ export class EventService {
     const newEvent = await new this.eventModel(createEventDto);
     /* createEventDto.eventStartDate = new Date(createEventDto.eventStartDate);
         createEventDto.eventEndDate = new Date(createEventDto.eventEndDate);*/
-    this.sendMail(createEventDto.participants, createEventDto);
+    // this.sendMail(createEventDto.participants, createEventDto);
     return newEvent.save();
   }
 
