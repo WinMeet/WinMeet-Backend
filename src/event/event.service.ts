@@ -31,18 +31,19 @@ export class EventService {
   //creating event
   async createEvent(createEventDto: CreateEventDto): Promise<EventInterface> {
     const newEvent = await new this.eventModel(createEventDto);
-    /* createEventDto.eventStartDate = new Date(createEventDto.eventStartDate);
-        createEventDto.eventEndDate = new Date(createEventDto.eventEndDate);*/
     // this.sendMail(createEventDto.participants, createEventDto);
+    console.log(newEvent);
     return newEvent.save();
   }
 
   //read all events
   async getAllEvents(): Promise<EventInterface[]> {
     const eventData = await this.eventModel.find();
-    if (!eventData || eventData.length == 0) {
-      throw new NotFoundException('Event data not found');
+
+    if (!eventData || eventData.length === 0) {
+      return [];
     }
+
     return eventData;
   }
 
