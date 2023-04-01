@@ -32,7 +32,6 @@ export class EventService {
   async createEvent(createEventDto: CreateEventDto): Promise<EventInterface> {
     const newEvent = await new this.eventModel(createEventDto);
     // this.sendMail(createEventDto.participants, createEventDto);
-    console.log(newEvent);
     return newEvent.save();
   }
 

@@ -15,8 +15,6 @@ export class UserService {
   async createUser(createUserDto: CreateUserDto): Promise<UserInterface> {
     const newUser = await new this.userModel(createUserDto);
 
-    /* createEventDto.eventStartDate = new Date(createEventDto.eventStartDate);
-        createEventDto.eventEndDate = new Date(createEventDto.eventEndDate);*/
     // this.sendMail(createEventDto.participants, createEventDto);
     return newUser.save();
   }

@@ -5,6 +5,5 @@ import mongoose from 'mongoose';
 export class AppService {
   getHello(): string {
     return 'Hello World!';
-    console.log(mongoose.connection.readyState)
   }
 }
