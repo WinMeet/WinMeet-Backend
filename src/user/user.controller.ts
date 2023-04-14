@@ -23,7 +23,8 @@ export class UserController {
   constructor(
     private eventService: UserService,
     private httpService: HttpService,
-  ) {}
+  ) { }
+
   async register_to_keycloak(
     @Headers('Authorization') authorization: string,
     @Body() data: any,
@@ -53,6 +54,7 @@ export class UserController {
       data_to_Send,
       { headers },
     );
+    console.log(response.data);
     return response.data;
   }
 
@@ -71,20 +73,56 @@ export class UserController {
     );
     return response.data;
   }
+  @Post('verify_user')
+  async verify_user(@Res() response, @Body() data: any) {
+
+    const url = 'http://localhost:8080/realms/test/protocol/openid-connect/token';
+
+    const headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Cookie: 'KEYCLOAK_LOCALE=en',
+    };
+
+    const data_Arr = new URLSearchParams();
+    data_Arr.append('grant_type', 'password');
+    data_Arr.append('client_id', 'admin-cli');
+    data_Arr.append('client_secret', 'rVzMx62F9kMIYsM46BXdOKESIEFd5Y8f');
+    data_Arr.append('username', data.email);
+    data_Arr.append('password', data.password);
+
+    axios
+      .post(url, data_Arr, { headers })
+      .then((res) => {
+        console.log(res.data['access_token']);
+        return response.status(HttpStatus.ACCEPTED).json({
+          token: res.data['access_token'],
+
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        return response.status(HttpStatus.FORBIDDEN).json({
+          token: 'unauthorized user',
+
+        });
+      });
+
+  }
   @Post()
   async createUser(@Res() response, @Body() CreateUserDto: CreateUserDto) {
     try {
       const newEvent = await this.eventService.createUser(CreateUserDto);
       const keycloak_val = await this.registerkeycloakuser(
         'admin-cli',
-        'SpnoVpo7iL3zgh8MVfzkTFu06yG1J3cy',
+        'rVzMx62F9kMIYsM46BXdOKESIEFd5Y8f',
         'client_credentials',
       );
-      console.log(newEvent);
+
       const register_kc = await this.register_to_keycloak(
         keycloak_val.access_token,
         newEvent,
       );
+
       console.log(register_kc);
 
       return response.status(HttpStatus.CREATED).json({
@@ -92,7 +130,7 @@ export class UserController {
         newEvent,
       });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       return response.status(HttpStatus.BAD_REQUEST).json({
         statusCode: 400,
         message: 'Error! User not created.',
