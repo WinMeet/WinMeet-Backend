@@ -1,72 +1,48 @@
 <html>
- 
-<head>
+
+  <head>
     <meta charset='utf-8' />
     <title></title>
     <style>
-        .siteTitle {
-            display: block;
-            font-weight: 900;
-            font-size: 30px;
-            margin: 20px 0;
-        }
- 
-        .card {
-            height: 400px;
-            position: relative;
-            padding: 20px;
-            box-sizing: border-box;
-            display: flex;
-            align-items: flex-end;
-            text-decoration: none;
-            border: 4px solid #b0215e;
-            margin-bottom: 20px;
-            background-size: cover;
- 
-        }
- 
-        .inner {
-            height: 50%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: white;
-            box-sizing: border-box;
-            padding: 40px;
- 
- 
-        }
- 
-        .title {
-            font-size: 24px;
-            color: black;
-            text-align: center;
-            font-weight: 700;
-            color: #181818;
-            text-shadow: 0px 2px 2px #a6f8d5;
-            position: relative;
-            margin: 0 0 20px 0;
- 
- 
-        }
+      .siteTitle { display: block; font-weight: 900; font-size: 30px; margin:
+      20px 0; } .card { height: 400px; position: relative; padding: 20px;
+      box-sizing: border-box; display: flex; align-items: flex-end;
+      text-decoration: none; border: 4px solid #b0215e; margin-bottom: 20px;
+      background-size: cover; } .inner { height: 50%; display: flex;
+      flex-direction: column; justify-content: center; align-items: center;
+      background: white; box-sizing: border-box; padding: 40px; } .title {
+      font-size: 24px; color: black; text-align: center; font-weight: 700;
+      color: #181818; text-shadow: 0px 2px 2px #a6f8d5; position: relative;
+      margin: 0 0 20px 0; }
     </style>
-</head>
- 
-<body>
+  </head>
+
+  <body>
     <div class='card'>
-        <div class='inner'>
-            <h2 class='title'>{{superHero.eventName}}</h2>
-            <div>
-                <ul>
-                    {{#each superHero.participants}}
-                    <li>{{this}}</li>
-                    {{/each}}
-                    
-                </ul>
-            </div>
+      <div class='inner'>
+        <h2 class='title'>{{superHero.eventName}}</h2>
+        <br />
+        <p>You are intived to WinMet Meeting</p>
+        <br />
+        <p>Location: {{superHero.location}}</p>
+        <br />
+        <p>{{superHero.eventDescription}}</p>
+        <br />
+        <strong>Time:
+          <p>{{superHero.eventStartDate}}
+            -
+            {{superHero.eventEndDate}}</p></strong>
+        <br />
+        <div>
+          <p>Participants:
+            {{#each superHero.participants}}
+              {{this}}
+            {{/each}}
+          </p>
+
         </div>
+      </div>
     </div>
-</body>
- 
+  </body>
+
 </html>
