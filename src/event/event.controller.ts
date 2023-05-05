@@ -14,6 +14,7 @@ import { CreateEventDto } from 'src/dto/create-event.dto';
 import { UpdateEventDto } from 'src/dto/update-event.dto';
 import { EventService } from './event.service';
 import { request } from 'http';
+import { stringify } from 'querystring';
 
 @Controller('createMeeting')
 export class EventController {
@@ -38,16 +39,16 @@ export class EventController {
 
   @Get('/all')
   async getEvents(@Res() response, @Req() request) {
-    console.log(JSON.parse(request.Body));
-    /*try {
-      const eventData = await this.eventService.findByuserEmail();
+    console.log(request.body.eventOwner);
+    try {
+      const eventData = await this.eventService.findByuserEmail(request.body.eventOwner);
       return response.status(HttpStatus.OK).json({
         message: 'All event data found successfully',
         eventData,
       });
     } catch (err) {
       return response.status(err.status).json(err.response);
-    }*/
+    }
   }
 
   @Put('/:id')
@@ -70,7 +71,7 @@ export class EventController {
     }
   }
 
-  @Get('/:id')
+  /*@Get('/:id')
   async findByid(@Res() response, @Param('id') eventId: string) {
     try {
       const existingEvent = await this.eventService.findByid(eventId);
@@ -81,7 +82,7 @@ export class EventController {
     } catch (err) {
       return response.status(err.status).json(err.response);
     }
-  }
+  }*/
 
   @Delete('/:id')
   async deleteEvent(@Res() response, @Param('id') eventId: string) {
