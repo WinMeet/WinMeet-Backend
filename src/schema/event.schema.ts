@@ -15,7 +15,7 @@ export class Event {
   location: string;
 
   @Prop()
-  eventDates: Array<Date>;
+  eventDates: Array<EventDates>;
 
   @Prop()
   eventPollDueDate: Date;
