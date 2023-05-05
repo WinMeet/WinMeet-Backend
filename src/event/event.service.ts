@@ -49,13 +49,12 @@ export class EventService {
   }
 
   //search event by id
-  async findByuserEmail(eventOwner: string) {
-
-    /*const existingEvent = await this.eventModel.find({ eventOwner: JSON.parse() });
+  async findByuserEmail(eventOwn: string): Promise<EventInterface[]> {
+    const existingEvent = await this.eventModel.find({ eventOwner: eventOwn });
     if (!existingEvent) {
       throw new NotFoundException('Event not found');
     }
-    return existingEvent;*/
+    return existingEvent;
   }
 
   //delete event by id

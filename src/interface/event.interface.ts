@@ -1,4 +1,4 @@
-mport { Document } from 'mongoose';
+import { Document } from 'mongoose';
 export interface EventInterface extends Document {
 
   readonly eventOwner: string;
