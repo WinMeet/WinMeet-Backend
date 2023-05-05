@@ -1,33 +1,28 @@
-import {
-  isArray,
-  IsDate,
-  IsNotEmpty,
-  isString,
-  IsString,
-  MaxLength,
-} from 'class-validator';
+import { isArray, IsDate, IsNotEmpty, isString, IsString, MaxLength } from "class-validator";
 
-export class CreateEventDto {
-  @IsString()
-  @MaxLength(30)
-  @IsNotEmpty()
-  readonly eventName: string;
 
-  @IsString()
-  readonly eventDescription: string;
+export class CreateEventDto{
+    @IsString()
+    @MaxLength(30)
+    @IsNotEmpty()
+    readonly eventName:string;
 
-  @IsString()
-  readonly location: string;
+    @IsString()
+    readonly eventDescription:string;
 
-  @IsString()
-  @IsNotEmpty()
-  readonly eventStartDate: Date;
+    @IsString()
+    @IsNotEmpty()
+    eventStartDate:Date;
 
-  @IsString()
-  @IsNotEmpty()
-  readonly eventEndDate: Date;
+    @IsString()
+    @IsNotEmpty()
+    eventEndDate:Date;
 
-  readonly participants: string[];
+    @IsString()    
+    location:string;
+
+    readonly participants:string[];
+
 }
 
 /*{
