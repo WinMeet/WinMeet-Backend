@@ -41,11 +41,12 @@ export class EventController {
   async getEvents(@Res() response, @Req() request) {
     console.log(request.body.eventOwner);
     try {
-      let eventData = await this.eventService.findByuserEmail(request.body.eventOwner);
-      eventData = await this.eventService.findByparticipants(eventData.participants);
+      const eventData = await this.eventService.findByuserEmail(request.body.eventOwner);
+      const eventPart = await this.eventService.findByparticipants(eventData.participants);
       return response.status(HttpStatus.OK).json({
         message: 'All event data found successfully',
         eventData,
+        eventPart,
       });
     } catch (err) {
       return response.status(err.status).json(err.response);
