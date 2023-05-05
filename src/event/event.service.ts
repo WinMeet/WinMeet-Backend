@@ -12,27 +12,27 @@ export class EventService {
   constructor(
     @InjectModel('Event') private eventModel: Model<EventInterface>,
     private mailService: MailerService,
-  ) {}
+  ) { }
 
   async sendMail(participants: string[], superHero: any) {
     for (var i = 0; i < participants.length; i++) {
       await this.mailService.sendMail({
         to: participants[i],
-        from: 'emredurmus06@hotmail.com',
+        from: 'xyz@hotmail.com',
         subject: 'WinMeet Template',
         template: 'superhero',
         context: {
           superHero: superHero,
         },
       });
+
       //return response;
     }
+    console.log(superHero);
   }
   //creating event
   async createEvent(createEventDto: CreateEventDto): Promise<EventInterface> {
     const newEvent = await new this.eventModel(createEventDto);
-    /* createEventDto.eventStartDate = new Date(createEventDto.eventStartDate);
-        createEventDto.eventEndDate = new Date(createEventDto.eventEndDate);*/
     this.sendMail(createEventDto.participants, createEventDto);
     return newEvent.save();
   }
@@ -40,20 +40,17 @@ export class EventService {
   //read all events
   async getAllEvents(): Promise<EventInterface[]> {
     const eventData = await this.eventModel.find();
-    if (!eventData || eventData.length == 0) {
-      throw new NotFoundException('Event data not found');
+
+    if (!eventData || eventData.length === 0) {
+      return [];
     }
+
     return eventData;
   }
 
   //search event by id
-<<<<<<< Updated upstream
   async findByuserEmail(eventOwn: string): Promise<EventInterface[]> {
     const existingEvent = await this.eventModel.find({ eventOwner: eventOwn });
-=======
-  async findByid(eventId: string): Promise<EventInterface> {
-    const existingEvent = await this.eventModel.findById(eventId);
->>>>>>> Stashed changes
     if (!existingEvent) {
       throw new NotFoundException('Event not found');
     }
@@ -79,7 +76,7 @@ export class EventService {
 
   //delete all events
   async deleteAllEvents() {
-    const deletedEvents = await this.eventModel.deleteMany({});
+    const deletedEvents = await this.eventModel.deleteMany();
     if (!deletedEvents) {
       throw new NotFoundException('Event not found');
     }
