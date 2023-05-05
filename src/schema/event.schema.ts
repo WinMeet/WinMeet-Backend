@@ -15,16 +15,22 @@ export class Event {
   location: string;
 
   @Prop()
-  eventDates: Array<EventDates>;
-
-  @Prop()
-  eventPollDueDate: Date;
-
-  @Prop()
   eventStartDate: Date;
 
   @Prop()
   eventEndDate: Date;
+
+  @Prop()
+  eventStartDate2: Date;
+
+  @Prop()
+  eventEndDate2: Date;
+
+  @Prop()
+  eventStartDate3: Date;
+
+  @Prop()
+  eventEndDate3: Date;
 
   @Prop()
   participants: string[];

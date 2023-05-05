@@ -42,11 +42,11 @@ export class EventController {
     console.log(request.body.eventOwner);
     try {
       const eventData = await this.eventService.findByuserEmail(request.body.eventOwner);
-      const eventPart = await this.eventService.findByparticipants(eventData.participants);
+      //const eventPart = await this.eventService.findByparticipants(eventData.participants);
       return response.status(HttpStatus.OK).json({
         message: 'All event data found successfully',
         eventData,
-        eventPart,
+        //eventPart,
       });
     } catch (err) {
       return response.status(err.status).json(err.response);
