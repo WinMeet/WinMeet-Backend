@@ -60,6 +60,13 @@ export class EventService {
     return existingEvent;
   }
 
+  async findByparticipants(parts: string[]): Promise<EventInterface[]> {
+    const existingEvent = await this.eventModel.find({ participants: { $in: parts } });
+    if (!existingEvent) {
+      throw new NotFoundException('Event not found');
+    }
+    return existingEvent;
+  }
   //delete event by id
   async deleteEvent(eventId: string): Promise<EventInterface> {
     const deletedEvent = await this.eventModel.findByIdAndDelete(eventId);
