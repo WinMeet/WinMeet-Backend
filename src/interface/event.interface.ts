@@ -9,19 +9,13 @@ export interface EventInterface extends Document {
 
   readonly location: string;
 
+  readonly eventDates: Array<EventDates>;
+
   readonly eventPollDueDate: Date;
 
   readonly eventStartDate: Date;
 
   readonly eventEndDate: Date;
-
-  readonly eventStartDate2: Date;
-
-  readonly eventEndDate2: Date;
-
-  readonly eventStartDate3: Date;
-
-  readonly eventEndDate3: Date;
 
   readonly participants: string[];
 }

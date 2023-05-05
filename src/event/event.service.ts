@@ -47,8 +47,13 @@ export class EventService {
   }
 
   //search event by id
+<<<<<<< Updated upstream
   async findByuserEmail(eventOwn: string): Promise<EventInterface[]> {
     const existingEvent = await this.eventModel.find({ eventOwner: eventOwn });
+=======
+  async findByid(eventId: string): Promise<EventInterface> {
+    const existingEvent = await this.eventModel.findById(eventId);
+>>>>>>> Stashed changes
     if (!existingEvent) {
       throw new NotFoundException('Event not found');
     }
