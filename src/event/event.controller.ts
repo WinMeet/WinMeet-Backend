@@ -8,14 +8,16 @@ import {
   Put,
   Param,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { CreateEventDto } from 'src/dto/create-event.dto';
 import { UpdateEventDto } from 'src/dto/update-event.dto';
 import { EventService } from './event.service';
+import { request } from 'http';
 
 @Controller('createMeeting')
 export class EventController {
-  constructor(private readonly eventService: EventService) {}
+  constructor(private readonly eventService: EventService) { }
 
   @Post()
   async createEvent(@Res() response, @Body() createEventDto: CreateEventDto) {
@@ -35,16 +37,17 @@ export class EventController {
   }
 
   @Get('/all')
-  async getEvents(@Res() response) {
-    try {
-      const eventData = await this.eventService.getAllEvents();
+  async getEvents(@Res() response, @Req() request) {
+    console.log(JSON.parse(request.Body));
+    /*try {
+      const eventData = await this.eventService.findByuserEmail();
       return response.status(HttpStatus.OK).json({
         message: 'All event data found successfully',
         eventData,
       });
     } catch (err) {
       return response.status(err.status).json(err.response);
-    }
+    }*/
   }
 
   @Put('/:id')

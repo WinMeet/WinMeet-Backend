@@ -35,8 +35,8 @@ import { HttpModule } from '@nestjs/axios';
       transport: {
         host: 'smtp.gmail.com',
         auth: {
-          user: '',
-          pass: '',
+          user: 'winmeet.mail@gmail.com',
+          pass: 'aatattriuompblrs',
         },
       },
       template: {
@@ -57,4 +57,4 @@ import { HttpModule } from '@nestjs/axios';
   ],
   providers: [AppService, EventService, UserService],
 })
-export class AppModule {}
+export class AppModule { }

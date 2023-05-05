@@ -12,26 +12,28 @@ export class EventService {
   constructor(
     @InjectModel('Event') private eventModel: Model<EventInterface>,
     private mailService: MailerService,
-  ) {}
+  ) { }
 
   async sendMail(participants: string[], superHero: any) {
     for (var i = 0; i < participants.length; i++) {
       await this.mailService.sendMail({
         to: participants[i],
-        from: 'emredurmus06@hotmail.com',
+        from: 'xyz@hotmail.com',
         subject: 'WinMeet Template',
         template: 'superhero',
         context: {
           superHero: superHero,
         },
       });
+
       //return response;
     }
+    console.log(superHero);
   }
   //creating event
   async createEvent(createEventDto: CreateEventDto): Promise<EventInterface> {
     const newEvent = await new this.eventModel(createEventDto);
-    // this.sendMail(createEventDto.participants, createEventDto);
+    this.sendMail(createEventDto.participants, createEventDto);
     return newEvent.save();
   }
 
@@ -47,12 +49,13 @@ export class EventService {
   }
 
   //search event by id
-  async findByid(eventId: string): Promise<EventInterface> {
-    const existingEvent = await this.eventModel.findById(eventId);
+  async findByuserEmail(eventOwner: string) {
+
+    /*const existingEvent = await this.eventModel.find({ eventOwner: JSON.parse() });
     if (!existingEvent) {
       throw new NotFoundException('Event not found');
     }
-    return existingEvent;
+    return existingEvent;*/
   }
 
   //delete event by id
