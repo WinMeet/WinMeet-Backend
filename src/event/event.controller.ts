@@ -42,6 +42,7 @@ export class EventController {
     console.log(request.body.eventOwner);
     try {
       const eventData = await this.eventService.findByuserEmail(request.body.eventOwner);
+      console.log(eventData.at(0).participants);
       const eventPart = await this.eventService.findByparticipants(eventData.at(0).participants);
       // const eventPart = await this.eventService.findByparticipants(eventData);
       return response.status(HttpStatus.OK).json({
