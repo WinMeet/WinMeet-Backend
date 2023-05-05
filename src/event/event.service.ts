@@ -57,8 +57,8 @@ export class EventService {
     return existingEvent;
   }
 
-  async findByparticipants(parts: string[]): Promise<EventInterface[]> {
-    const existingEvent = await this.eventModel.find({ participants: { $in: parts } });
+  async findByparticipants(eventOwn: string): Promise<EventInterface[]> {
+    const existingEvent = await this.eventModel.find({ participants: { $in: [eventOwn] } });
     if (!existingEvent) {
       throw new NotFoundException('Event not found');
     }
