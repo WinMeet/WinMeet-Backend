@@ -16,8 +16,12 @@ import { EventService } from './event.service';
 import { request } from 'http';
 import { stringify } from 'querystring';
 
+const schedule = require('node-schedule');
+
+const job = schedule.scheduleJob('*/1 * * * *', function () {console.log('The answer to life, the universe, and everything!');});
 @Controller('createMeeting')
 export class EventController {
+  
   constructor(private readonly eventService: EventService) { }
 
   @Post()
