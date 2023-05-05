@@ -18,11 +18,12 @@ import { stringify } from 'querystring';
 
 const schedule = require('node-schedule');
 
-const job = schedule.scheduleJob('*/1 * * * *', function () {console.log('The answer to life, the universe, and everything!');});
+const job = schedule.scheduleJob('*/1 * * * *', function () {
+  console.log('The answer to life, the universe, and everything!');
+});
 @Controller('createMeeting')
 export class EventController {
-  
-  constructor(private readonly eventService: EventService) { }
+  constructor(private readonly eventService: EventService) {}
 
   @Post()
   async createEvent(@Res() response, @Body() createEventDto: CreateEventDto) {
@@ -41,21 +42,23 @@ export class EventController {
     }
   }
 
-  @Get('/all')
+  @Post('/all')
   async getEvents(@Res() response, @Req() request) {
     console.log(request.body.eventOwner);
     try {
-      const eventData = await this.eventService.findByuserEmail(request.body.eventOwner);
+      const eventData = await this.eventService.findByuserEmail(
+        request.body.eventOwner,
+      );
 
-      const eventPart = await this.eventService.findByparticipants(request.body.eventOwner);
+      const eventPart = await this.eventService.findByparticipants(
+        request.body.eventOwner,
+      );
       //eventData.concat(eventPart);
-      const combined = [...eventData, ...eventPart]
+      const combined = [...eventData, ...eventPart];
       // const eventPart = await this.eventService.findByparticipants(eventData);
       return response.status(HttpStatus.OK).json({
         message: 'All event data found successfully',
         combined,
-
-
       });
     } catch (err) {
       return response.status(err.status).json(err.response);
