@@ -44,11 +44,12 @@ export class EventController {
       const eventData = await this.eventService.findByuserEmail(request.body.eventOwner);
 
       const eventPart = await this.eventService.findByparticipants(request.body.eventOwner);
-      eventData.concat(eventPart);
+      //eventData.concat(eventPart);
+      const combined = [...eventData, ...eventPart]
       // const eventPart = await this.eventService.findByparticipants(eventData);
       return response.status(HttpStatus.OK).json({
         message: 'All event data found successfully',
-        eventData,
+        combined,
 
 
       });
