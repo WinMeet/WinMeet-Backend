@@ -3,6 +3,9 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 @Schema()
 export class Event {
   @Prop()
+  eventOwner: string;
+
+  @Prop()
   eventName: string;
 
   @Prop()
@@ -10,6 +13,12 @@ export class Event {
 
   @Prop()
   location: string;
+
+  @Prop()
+  eventDates: Array<Date>;
+
+  @Prop()
+  eventPollDueDate: Date;
 
   @Prop()
   eventStartDate: Date;
