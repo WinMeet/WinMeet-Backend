@@ -42,6 +42,9 @@ export class Event {
   eventVote3: number;
 
   @Prop()
+  eventVoteDuration: Date;
+
+  @Prop()
   participants: string[];
 }
 
