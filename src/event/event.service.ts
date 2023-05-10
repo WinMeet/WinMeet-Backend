@@ -12,7 +12,7 @@ export class EventService {
   constructor(
     @InjectModel('Event') private eventModel: Model<EventInterface>,
     private mailService: MailerService,
-  ) { }
+  ) {}
 
   async sendMail(participants: string[], superHero: any) {
     for (var i = 0; i < participants.length; i++) {
@@ -58,12 +58,44 @@ export class EventService {
   }
 
   async findByparticipants(eventOwn: string): Promise<EventInterface[]> {
-    const existingEvent = await this.eventModel.find({ participants: { $in: [eventOwn] } });
+    const existingEvent = await this.eventModel.find({
+      participants: { $in: [eventOwn] },
+    });
     if (!existingEvent) {
       throw new NotFoundException('Event not found');
     }
     return existingEvent;
   }
+
+  async findByIdAndUpdateVote(eventId: string, fieldToIncrement: number) {
+    let field;    
+    switch (fieldToIncrement) {
+      case 1:
+        field = 'eventVote1';
+        break;
+      case 2:
+        field = 'eventVote2';
+        break;
+      case 3:
+        field = 'eventVote3';
+        break;
+      default:
+        throw new NotFoundException('Invalid fieldToIncrement value');
+    }
+
+    const result = await this.eventModel.findByIdAndUpdate(
+      eventId,
+      { $inc: { [field]: 1 } },
+      { new: true }
+    );
+      
+    if (!result) {
+      throw new NotFoundException('Event not found');
+    }
+
+    return result;
+  }
+
   //delete event by id
   async deleteEvent(eventId: string): Promise<EventInterface> {
     const deletedEvent = await this.eventModel.findByIdAndDelete(eventId);

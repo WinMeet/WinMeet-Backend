@@ -15,11 +15,12 @@ import { UpdateEventDto } from 'src/dto/update-event.dto';
 import { EventService } from './event.service';
 import { request } from 'http';
 import { stringify } from 'querystring';
+import { Db, Collection } from 'mongodb';
 
 const schedule = require('node-schedule');
 
 const job = schedule.scheduleJob('*/1 * * * *', function () {
-  console.log('The answer to life, the universe, and everything!');
+  //console.log('The answer to life, the universe, and everything!');
 });
 @Controller('createMeeting')
 export class EventController {
@@ -82,6 +83,20 @@ export class EventController {
       });
     } catch (err) {
       return response.status(err.status).json(err.response);
+    }
+  }
+
+  @Put('/pending/:id')
+  async findByIdAndUpdate(@Param('id') eventId: string, @Body('fieldToIncrement') fieldToIncrement: number, @Res() response) {
+    console.log(eventId);
+    try {
+      const result = await this.eventService.findByIdAndUpdateVote(eventId, fieldToIncrement);
+      console.log(result);
+      return response.status(HttpStatus.OK).json({
+        message: 'Event has been successfully updated'        
+      });
+    } catch (error) {
+      return response.status(error.status).json(error.response);
     }
   }
 
