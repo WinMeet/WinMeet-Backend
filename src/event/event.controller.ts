@@ -16,22 +16,30 @@ import { EventService } from './event.service';
 import { request } from 'http';
 import { stringify } from 'querystring';
 
+import { WebSocketGateway, ConnectedSocket } from '@nestjs/websockets';
+import { Socket } from 'socket.io';
+
 const schedule = require('node-schedule');
 
-const job = schedule.scheduleJob('*/1 * * * *', function () {console.log('The answer to life, the universe, and everything!');});
+//const job = schedule.scheduleJob('*/1 * * * *', function () { console.log('The answer to life, the universe, and everything!'); });
 @Controller('createMeeting')
 export class EventController {
-  
+
   constructor(private readonly eventService: EventService) { }
+
+
 
   @Post()
   async createEvent(@Res() response, @Body() createEventDto: CreateEventDto) {
     try {
       const newEvent = await this.eventService.createEvent(createEventDto);
+      const combined = [...newEvent.eventOwner, ...newEvent.participants];
       return response.status(HttpStatus.CREATED).json({
         message: 'Event has been created successfully',
         newEvent,
       });
+
+
     } catch (err) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         statusCode: 400,
