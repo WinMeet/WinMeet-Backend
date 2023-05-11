@@ -27,5 +27,7 @@ export interface EventInterface extends Document {
   
   readonly eventVote3: number;
 
+  readonly eventVoteDuration: Date;
+
   readonly participants: string[];
 }

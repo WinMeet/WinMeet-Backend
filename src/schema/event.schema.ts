@@ -2,10 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema()
 export class Event {
-  @Prop()
+  @Prop({ required: true })
   eventOwner: string;
 
-  @Prop()
+  @Prop({ required: true })
   eventName: string;
 
   @Prop()
@@ -14,10 +14,10 @@ export class Event {
   @Prop()
   location: string;
 
-  @Prop()
+  @Prop({ required: true })
   eventStartDate: Date;
 
-  @Prop()
+  @Prop({ required: true })
   eventEndDate: Date;
 
   @Prop()
@@ -32,14 +32,17 @@ export class Event {
   @Prop()
   eventEndDate3: Date;
 
-  @Prop()
+  @Prop({default: 0})
   eventVote1: number;
 
-  @Prop()
+  @Prop({default: 0})
   eventVote2: number;
 
-  @Prop()
+  @Prop({default: 0})
   eventVote3: number;
+
+  @Prop()
+  eventVoteDuration: Date;
 
   @Prop()
   participants: string[];
