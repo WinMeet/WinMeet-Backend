@@ -46,6 +46,9 @@ export class Event {
 
   @Prop()
   participants: string[];
+
+  @Prop({default: true})
+  isPending: boolean;
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);
