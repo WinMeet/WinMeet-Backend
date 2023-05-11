@@ -29,17 +29,31 @@ const job = schedule.scheduleJob('*/1 * * * *', function (createEventDto: Create
         // Emit socket.io event here
         socket.emit("vote");
 
-        // Trigger the sendMail event in the backend
-        fetch('/sendMail', {
-            method: 'POST',
-            // Include any necessary data in the request body
-            body: JSON.stringify({
-                participants: createEventDto.participants,
-                superHero: createEventDto,
-            }),
-            headers: {
-                'Content-Type': 'application/json',
-            },
+        // Listen for the vote event response
+        socket.on("vote", (data) => {
+            // Check if the vote event value is not empty
+            if (data !== null && data !== undefined) {
+                // Trigger the sendMail event in the backend
+                fetch('/sendMail', {
+                    method: 'POST',
+                    // Include any necessary data in the request body
+                    body: JSON.stringify({
+                        participants: createEventDto.participants,
+                        superHero: createEventDto,
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then((response) => {
+                        // Handle the response
+                        // ...
+                    })
+                    .catch((error) => {
+                        // Handle the error
+                        // ...
+                    });
+            }
         });
     };
 });
