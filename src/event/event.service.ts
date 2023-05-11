@@ -35,6 +35,11 @@ export class EventService {
   //creating event
   async createEvent(createEventDto: CreateEventDto): Promise<EventInterface> {
     const newEvent = await new this.eventModel(createEventDto);
+
+    if(newEvent.eventEndDate2 == null && newEvent.eventEndDate3 == null){
+      newEvent.isPending = false;
+    }
+
     this.sendMail(createEventDto.participants, createEventDto);
 
     return newEvent.save();
@@ -43,6 +48,16 @@ export class EventService {
   //read all events
   async getAllEvents(): Promise<EventInterface[]> {
     const eventData = await this.eventModel.find();
+
+    if (!eventData || eventData.length === 0) {
+      return [];
+    }
+
+    return eventData;
+  }
+
+  async getPendingEvents(): Promise<EventInterface[]> {
+    const eventData = await this.eventModel.find({ isPending: true });
 
     if (!eventData || eventData.length === 0) {
       return [];
