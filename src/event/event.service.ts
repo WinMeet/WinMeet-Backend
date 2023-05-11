@@ -39,6 +39,7 @@ export class EventService {
     if(newEvent.eventEndDate2 == null && newEvent.eventEndDate3 == null){
       newEvent.isPending = false;
     }
+    
 
     this.sendMail(createEventDto.participants, createEventDto);
 
