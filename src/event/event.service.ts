@@ -12,7 +12,7 @@ export class EventService {
   constructor(
     @InjectModel('Event') private eventModel: Model<EventInterface>,
     private mailService: MailerService,
-  ) {}
+  ) { }
 
   async sendMail(participants: string[], superHero: any) {
     for (var i = 0; i < participants.length; i++) {
@@ -68,7 +68,7 @@ export class EventService {
   }
 
   async findByIdAndUpdateVote(eventId: string, fieldToIncrement: number) {
-    let field;    
+    let field;
     switch (fieldToIncrement) {
       case 1:
         field = 'eventVote1';
@@ -88,7 +88,7 @@ export class EventService {
       { $inc: { [field]: 1 } },
       { new: true }
     );
-      
+
     if (!result) {
       throw new NotFoundException('Event not found');
     }
