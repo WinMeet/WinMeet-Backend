@@ -30,4 +30,6 @@ export interface EventInterface extends Document {
   readonly eventVoteDuration: Date;
 
   readonly participants: string[];
+
+  readonly isPending: boolean;
 }

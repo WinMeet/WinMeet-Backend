@@ -7,11 +7,13 @@ import { UpdateEventDto } from 'src/dto/update-event.dto';
 import { EventSchema } from 'src/schema/event.schema';
 
 import { MailerService } from '@nestjs-modules/mailer';
+
 @Injectable()
 export class EventService {
   constructor(
     @InjectModel('Event') private eventModel: Model<EventInterface>,
     private mailService: MailerService,
+
   ) { }
 
   async sendMail(participants: string[], superHero: any) {
@@ -34,6 +36,7 @@ export class EventService {
   async createEvent(createEventDto: CreateEventDto): Promise<EventInterface> {
     const newEvent = await new this.eventModel(createEventDto);
     this.sendMail(createEventDto.participants, createEventDto);
+
     return newEvent.save();
   }
 

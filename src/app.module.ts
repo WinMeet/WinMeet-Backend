@@ -16,12 +16,13 @@ import { UserController } from './user/user.controller';
 import { UserSchema } from './schema/user.schema';
 import { join } from 'path/posix';
 import { HttpModule } from '@nestjs/axios';
-
+import { SocketModule } from './socket/socket.module';
 //KeyCloak
 
 @Module({
   imports: [
     HttpModule,
+    SocketModule,
     MongooseModule.forRoot(
       'mongodb+srv://admin:muzumsu@cluster0.t49jrqs.mongodb.net/test',
       { dbname: 'WinMeetDB' },
