@@ -13,8 +13,7 @@ export class EventService {
   constructor(
     @InjectModel('Event') private eventModel: Model<EventInterface>,
     private mailService: MailerService,
-
-  ) { }
+  ) {}
 
   async sendMail(participants: string[], superHero: any) {
     for (var i = 0; i < participants.length; i++) {
@@ -36,10 +35,9 @@ export class EventService {
   async createEvent(createEventDto: CreateEventDto): Promise<EventInterface> {
     const newEvent = await new this.eventModel(createEventDto);
 
-    if(newEvent.eventEndDate2 == null && newEvent.eventEndDate3 == null){
+    if (newEvent.eventEndDate2 == null && newEvent.eventEndDate3 == null) {
       newEvent.isPending = false;
     }
-    
 
     this.sendMail(createEventDto.participants, createEventDto);
 
@@ -86,9 +84,12 @@ export class EventService {
     return existingEvent;
   }
 
-  async findByIdAndUpdateVote(eventId: string, voterArray: string, fieldToIncrement: number) {
+  async findByIdAndUpdateVote(
+    eventId: string,
+    voterArray: string,
+    fieldToIncrement: number,
+  ) {
     let field;
-    
 
     switch (fieldToIncrement) {
       case 0:
@@ -106,13 +107,9 @@ export class EventService {
 
     const result = await this.eventModel.findByIdAndUpdate(
       eventId,
-      {
-        $push: { voters: voterArray },
-        $inc: { [field]: 1 },
-      },
-      { new: true }
+      { $inc: { [field]: 1 } },
+      { new: true },
     );
-    
 
     if (!result) {
       throw new NotFoundException('Event not found');
