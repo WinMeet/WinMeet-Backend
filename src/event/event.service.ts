@@ -107,7 +107,10 @@ export class EventService {
 
     const result = await this.eventModel.findByIdAndUpdate(
       eventId,
-      { $inc: { [field]: 1 } },
+      {
+        $push: { voters: voterArray },
+        $inc: { [field]: 1 },
+      },
       { new: true },
     );
 

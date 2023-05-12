@@ -1,6 +1,5 @@
 import { Document } from 'mongoose';
 export interface EventInterface extends Document {
-
   readonly eventOwner: string;
 
   readonly eventName: string;
@@ -24,16 +23,16 @@ export interface EventInterface extends Document {
   readonly eventVote1: number;
 
   readonly eventVote2: number;
-  
+
   readonly eventVote3: number;
 
   readonly eventVoteDuration: Date;
 
   readonly participants: string[];
 
-   isPending: boolean;
-   
-   readonly voters: string[];
+  isPending: boolean;
 
-    isVoted: boolean;
+  readonly voters: string[];
+
+  isVoted: boolean;
 }

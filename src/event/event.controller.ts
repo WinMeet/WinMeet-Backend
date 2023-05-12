@@ -18,8 +18,6 @@ import { stringify } from 'querystring';
 import { Db, Collection } from 'mongodb';
 import { now } from 'mongoose';
 
-
-
 const io = require('socket.io-client');
 const moment = require('moment-timezone');
 const socket = io('http://localhost:3002');
@@ -39,11 +37,11 @@ const dateObject = new Date(formattedDateTime);*/
 var eventDtoarray = [];
 var pendingDueDate = new Date();
 var participants = [];
-var eventService : EventService;
-var eventOwner = "";
+var eventService: EventService;
+var eventOwner = '';
 
 //const job = schedule.scheduleJob('*/5 * * * * *', function () {
-    /*console.log('The answer to life, the universe, and everything!');
+/*console.log('The answer to life, the universe, and everything!');
     console.log(currentDateTime);
     var Superhero: any;
 
@@ -70,15 +68,11 @@ var eventOwner = "";
     }
   });*/
 
-
 @Controller('createMeeting')
 export class EventController {
   constructor(private readonly eventService: EventService) {
     this.eventService = eventService;
   }
-
-  
-
 
   @Post('/sendMail')
   async sendMailEvent(@Body() body: any) {
@@ -93,8 +87,7 @@ export class EventController {
       eventDtoarray = [...eventDtoarray, newEvent];
       pendingDueDate = newEvent.eventVoteDuration;
       participants = newEvent.participants;
-      eventOwner = newEvent.eventOwner;  
-
+      eventOwner = newEvent.eventOwner;
 
       var task = schedule.scheduleJob(newEvent.eventVoteDuration, function () {
         console.log('The answer to life, the universe, and everything!');
@@ -117,21 +110,23 @@ export class EventController {
   async getEvents(@Res() response, @Req() request) {
     //console.log(request.body.eventOwner);
     try {
-  
-      const eventData = await this.eventService.findByuserEmail(request.body.eventOwner);
-      const eventPart = await this.eventService.findByparticipants(request.body.eventOwner);
-     
+      const eventData = await this.eventService.findByuserEmail(
+        request.body.eventOwner,
+      );
+      const eventPart = await this.eventService.findByparticipants(
+        request.body.eventOwner,
+      );
+
       for (const participants of eventPart) {
         for (const participant of participants.participants) {
-          
           if (participants.voters.includes(participant)) {
             participants.isVoted = true;
           }
         }
       }
-  
+
       const combined = [...eventData, ...eventPart];
-  
+
       return response.status(HttpStatus.OK).json({
         message: 'All event data found successfully',
         combined,
@@ -140,7 +135,6 @@ export class EventController {
       return response.status(err.status).json(err.response);
     }
   }
-  
 
   @Put('/:id')
   async updateEvent(
@@ -217,5 +211,3 @@ export class EventController {
     }
   }
 }
-
-

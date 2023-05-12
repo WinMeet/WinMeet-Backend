@@ -32,13 +32,13 @@ export class Event {
   @Prop()
   eventEndDate3: Date;
 
-  @Prop({default: 0})
+  @Prop({ default: 0 })
   eventVote1: number;
 
-  @Prop({default: 0})
+  @Prop({ default: 0 })
   eventVote2: number;
 
-  @Prop({default: 0})
+  @Prop({ default: 0 })
   eventVote3: number;
 
   @Prop()
@@ -47,7 +47,7 @@ export class Event {
   @Prop()
   participants: string[];
 
-  @Prop({default: true})
+  @Prop({ default: true })
   isPending: boolean;
 
   @Prop()

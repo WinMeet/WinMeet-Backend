@@ -50,14 +50,3 @@ export class CreateEventDto {
 
   voters: string[];
 }
-
-/*{
-    "eventName": "test31",
-    "eventDescription": "fdsfdsaf",
-    "location": "fdsafasdf",
-    "eventStartDate": "2023-03-24T19:00:14.463386",
-    "eventEndDate": "2023-03-24T20:00:14.463506",
-    "participants": [
-  "test@test.com"
-    ]
-}*/
