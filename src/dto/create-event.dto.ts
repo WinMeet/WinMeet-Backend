@@ -47,6 +47,8 @@ export class CreateEventDto {
   eventVoteDuration: Date;
 
   isPending: boolean;
+
+  voters: string[];
 }
 
 /*{

@@ -32,4 +32,8 @@ export interface EventInterface extends Document {
   readonly participants: string[];
 
    isPending: boolean;
+   
+   readonly voters: string[];
+
+    isVoted: boolean;
 }

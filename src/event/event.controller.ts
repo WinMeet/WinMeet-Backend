@@ -16,51 +16,70 @@ import { EventService } from './event.service';
 import { request } from 'http';
 import { stringify } from 'querystring';
 import { Db, Collection } from 'mongodb';
+import { now } from 'mongoose';
+
+
 
 const io = require('socket.io-client');
-
+const moment = require('moment-timezone');
 const socket = io('http://localhost:3002');
 const schedule = require('node-schedule');
 
-const job = schedule.scheduleJob(
-  '*/1 * * * *',
-  function (createEventDto: CreateEventDto) {
-    const handleVoteClick = () => {
-      // Emit socket.io event here
-      socket.emit('vote');
+// Set the desired timezone (e.g., Istanbul)
+const desiredTimezone = 'Europe/Istanbul';
 
-      // Listen for the vote event response
-      socket.on('vote', (data) => {
-        // Check if the vote event value is not empty
-        if (data !== null && data !== undefined) {
-          // Trigger the sendMail event in the backend
-          fetch('/sendMail', {
+// Create a new moment object with the current datetime
+const currentDateTime = new Date();
+
+/*// Convert the datetime to the desired timezone
+const timezoneDateTime = currentDateTime.tz(desiredTimezone);
+const formattedDateTime = timezoneDateTime.toISOString();
+const dateObject = new Date(formattedDateTime);*/
+
+var eventDtoarray = [];
+var pendingDueDate = new Date();
+var participants = [];
+var eventService : EventService;
+var eventOwner = "";
+
+//const job = schedule.scheduleJob('*/5 * * * * *', function () {
+    /*console.log('The answer to life, the universe, and everything!');
+    console.log(currentDateTime);
+    var Superhero: any;
+
+    if (eventDtoarray.length > 0) {
+      if (currentDateTime === pendingDueDate) {
+        fetch('/sendMail', {
             method: 'POST',
-            // Include any necessary data in the request body
+           
             body: JSON.stringify({
-              participants: createEventDto.participants,
-              superHero: createEventDto,
+                participants: participants,
+                superHero: Superhero,
             }),
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
-          })
+        })
             .then((response) => {
-              // Handle the response
-              // ...
+            
             })
             .catch((error) => {
-              // Handle the error
-              // ...
+              
             });
-        }
-      });
-    };
-  },
-);
+      }
+    }
+  });*/
+
+
 @Controller('createMeeting')
 export class EventController {
-  constructor(private readonly eventService: EventService) {}
+  constructor(private readonly eventService: EventService) {
+    this.eventService = eventService;
+  }
+
+  
+
+
   @Post('/sendMail')
   async sendMailEvent(@Body() body: any) {
     const { participants, superHero } = body;
@@ -71,7 +90,15 @@ export class EventController {
     try {
       const newEvent = await this.eventService.createEvent(createEventDto);
 
-      // Create a socket for each participant
+      eventDtoarray = [...eventDtoarray, newEvent];
+      pendingDueDate = newEvent.eventVoteDuration;
+      participants = newEvent.participants;
+      eventOwner = newEvent.eventOwner;  
+
+
+      var task = schedule.scheduleJob(newEvent.eventVoteDuration, function () {
+        console.log('The answer to life, the universe, and everything!');
+      });
 
       return response.status(HttpStatus.CREATED).json({
         message: 'Event has been created successfully',
@@ -88,18 +115,23 @@ export class EventController {
 
   @Post('/all')
   async getEvents(@Res() response, @Req() request) {
-    console.log(request.body.eventOwner);
+    //console.log(request.body.eventOwner);
     try {
-      const eventData = await this.eventService.findByuserEmail(
-        request.body.eventOwner,
-      );
-
-      const eventPart = await this.eventService.findByparticipants(
-        request.body.eventOwner,
-      );
-      //eventData.concat(eventPart);
+  
+      const eventData = await this.eventService.findByuserEmail(request.body.eventOwner);
+      const eventPart = await this.eventService.findByparticipants(request.body.eventOwner);
+     
+      for (const participants of eventPart) {
+        for (const participant of participants.participants) {
+          
+          if (participants.voters.includes(participant)) {
+            participants.isVoted = true;
+          }
+        }
+      }
+  
       const combined = [...eventData, ...eventPart];
-      // const eventPart = await this.eventService.findByparticipants(eventData);
+  
       return response.status(HttpStatus.OK).json({
         message: 'All event data found successfully',
         combined,
@@ -108,6 +140,7 @@ export class EventController {
       return response.status(err.status).json(err.response);
     }
   }
+  
 
   @Put('/:id')
   async updateEvent(
@@ -129,9 +162,10 @@ export class EventController {
     }
   }
 
-  @Put('/pending/:id')
+  @Put('/pending/:id/:voter')
   async findByIdAndUpdate(
     @Param('id') eventId: string,
+    @Param('voter') voter: string,
     @Body('fieldToIncrement') fieldToIncrement: number,
     @Res() response,
   ) {
@@ -139,6 +173,7 @@ export class EventController {
     try {
       const result = await this.eventService.findByIdAndUpdateVote(
         eventId,
+        voter,
         fieldToIncrement,
       );
       console.log(result);
@@ -154,6 +189,8 @@ export class EventController {
   async deleteEvent(@Res() response, @Param('id') eventId: string) {
     try {
       const deletedEvent = await this.eventService.deleteEvent(eventId);
+
+      this.sendMailEvent(deletedEvent.participants);
 
       return response.status(HttpStatus.OK).json({
         message: 'Event Deleted Successfully',
@@ -180,3 +217,5 @@ export class EventController {
     }
   }
 }
+
+

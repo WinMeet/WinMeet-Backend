@@ -86,16 +86,18 @@ export class EventService {
     return existingEvent;
   }
 
-  async findByIdAndUpdateVote(eventId: string, fieldToIncrement: number) {
+  async findByIdAndUpdateVote(eventId: string, voterArray: string, fieldToIncrement: number) {
     let field;
+    
+
     switch (fieldToIncrement) {
-      case 1:
+      case 0:
         field = 'eventVote1';
         break;
-      case 2:
+      case 1:
         field = 'eventVote2';
         break;
-      case 3:
+      case 2:
         field = 'eventVote3';
         break;
       default:
@@ -104,9 +106,13 @@ export class EventService {
 
     const result = await this.eventModel.findByIdAndUpdate(
       eventId,
-      { $inc: { [field]: 1 } },
+      {
+        $push: { voters: voterArray },
+        $inc: { [field]: 1 },
+      },
       { new: true }
     );
+    
 
     if (!result) {
       throw new NotFoundException('Event not found');

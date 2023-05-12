@@ -49,6 +49,9 @@ export class Event {
 
   @Prop({default: true})
   isPending: boolean;
+
+  @Prop()
+  voters: string[];
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);
