@@ -11,6 +11,7 @@ export class CreateEventDto {
   @IsString()
   @MaxLength(30)
   @IsNotEmpty()
+  
   readonly eventName: string;
 
   @IsString()
