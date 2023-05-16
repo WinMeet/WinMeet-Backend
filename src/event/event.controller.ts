@@ -212,7 +212,6 @@ export class EventController {
     try {
       const deletedEvent = await this.eventService.deleteEvent(eventId);
       console.log(deletedEvent);
-      await this.eventService.sendMail(participants, deletedEvent, 'delete');
 
       return response.status(HttpStatus.OK).json({
         message: 'Event Deleted Successfully',

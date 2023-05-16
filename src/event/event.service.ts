@@ -41,6 +41,8 @@ export class EventService {
       newEvent.isPending = false;
     }
 
+    this.sendMail(createEventDto.participants, createEventDto, 'invitation');
+
     var job = schedule.scheduleJob(newEvent.eventVoteDuration, () =>  {
       this.sendMail(createEventDto.participants, createEventDto, 'invitation');});  
 
@@ -130,6 +132,9 @@ export class EventService {
     if (!deletedEvent) {
       throw new NotFoundException('Event not found');
     }
+
+    await this.sendMail(deletedEvent.participants, deletedEvent, 'delete');
+
 
     return deletedEvent;
   }
