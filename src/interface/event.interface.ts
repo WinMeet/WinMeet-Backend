@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 export interface EventInterface extends Document {
-  readonly eventOwner: string;
+   eventOwner: string;
 
   readonly eventName: string;
 
