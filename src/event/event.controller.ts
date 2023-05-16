@@ -74,11 +74,11 @@ export class EventController {
     this.eventService = eventService;
   }
 
-  @Post('/sendMail')
-  async sendMailEvent(@Body() body: any) {
-    const { participants, superHero } = body;
-    await this.eventService.sendMail(participants, superHero);
-  }
+  // @Post('/sendMail')
+  // async sendMailEvent(@Body() body: any) {
+  //   const { participants, superHero } = body;
+  //   await this.eventService.sendMail(participants, superHero);
+  // }
   @Post()
   async createEvent(@Res() response, @Body() createEventDto: CreateEventDto) {
     try {
@@ -91,8 +91,8 @@ export class EventController {
 
       if (!newEvent.$isEmpty) {
         var startTime = new Date(newEvent.eventVoteDuration.getTime());
-        var endTime = new Date(startTime.getTime());
-        var job = schedule.scheduleOnce(
+        var endTime = new Date(startTime.getTime() + 1000);
+        var job = schedule.scheduleJob(
           { start: startTime, end: endTime, rule: '*/1 * * * * *' },
           function () {
             console.log('Mail sent to participants');
@@ -191,8 +191,8 @@ export class EventController {
   async deleteEvent(@Res() response, @Param('id') eventId: string) {
     try {
       const deletedEvent = await this.eventService.deleteEvent(eventId);
-      // FIX CRASHES WHEN DELETE
-      this.sendMailEvent(deletedEvent.participants);
+      console.log(deletedEvent);
+      await this.eventService.sendMail(participants, deletedEvent, 'delete');
 
       return response.status(HttpStatus.OK).json({
         message: 'Event Deleted Successfully',

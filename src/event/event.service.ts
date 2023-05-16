@@ -15,21 +15,20 @@ export class EventService {
     private mailService: MailerService,
   ) {}
 
-  async sendMail(participants: string[], superHero: any) {
+  async sendMail(participants: string[], dto: any, templateName: string) {
     for (var i = 0; i < participants.length; i++) {
       await this.mailService.sendMail({
         to: participants[i],
         from: 'xyz@hotmail.com',
         subject: 'WinMeet Template',
-        template: 'superhero',
-        // context: {
-        //   superHero: superHero,
-        // },
+        template: templateName,
+        context: {
+          superhero: dto,
+        },
       });
 
       //return response;
     }
-    console.log(superHero);
   }
   //creating event
   async createEvent(createEventDto: CreateEventDto): Promise<EventInterface> {
@@ -39,7 +38,7 @@ export class EventService {
       newEvent.isPending = false;
     }
 
-    this.sendMail(createEventDto.participants, createEventDto);
+    this.sendMail(createEventDto.participants, createEventDto, 'invitation');
 
     return newEvent.save();
   }
