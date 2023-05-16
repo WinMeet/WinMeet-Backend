@@ -78,7 +78,7 @@ export class EventController {
   // @Post('/sendMail')
   // async sendMailEvent(@Body() body: any) {
   //   const { participants, superHero } = body;
-  //   await this.eventService.sendMail(participants, superHero);
+  //   await this.eventService.sefndMail(participants, superHero);
   // }
   @Post()
   async createEvent(@Res() response, @Body() createEventDto: CreateEventDto) {
