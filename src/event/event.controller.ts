@@ -78,7 +78,7 @@ export class EventController {
   // @Post('/sendMail')
   // async sendMailEvent(@Body() body: any) {
   //   const { participants, superHero } = body;
-  //   await this.eventService.sefndMail(participants, superHero);
+  //   await this.eventService.sendMail(participants, superHero);
   // }
   @Post()
   async createEvent(@Res() response, @Body() createEventDto: CreateEventDto) {
@@ -152,9 +152,9 @@ export class EventController {
     @Body() updateEventDto: UpdateEventDto,
   ) {
 
-    var email = updateEventDto.participants;
+    var email = Array(updateEventDto.eventOwner);
 
-    eventService.sendMail(email, eventOwner, 'notice_owner');
+    eventService.sendMail(email, updateEventDto, 'notice_owner');
     
     try {
       const existingEvent = await this.eventService.updateEvent(
