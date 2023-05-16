@@ -183,7 +183,7 @@ export class EventController {
   async deleteEvent(@Res() response, @Param('id') eventId: string) {
     try {
       const deletedEvent = await this.eventService.deleteEvent(eventId);
-
+      // FIX CRASHES WHEN DELETE
       this.sendMailEvent(deletedEvent.participants);
 
       return response.status(HttpStatus.OK).json({
