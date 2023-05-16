@@ -22,9 +22,9 @@ export class EventService {
         from: 'xyz@hotmail.com',
         subject: 'WinMeet Template',
         template: 'superhero',
-        context: {
-          superHero: superHero,
-        },
+        // context: {
+        //   superHero: superHero,
+        // },
       });
 
       //return response;
