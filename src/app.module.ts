@@ -16,12 +16,13 @@ import { UserController } from './user/user.controller';
 import { UserSchema } from './schema/user.schema';
 import { join } from 'path/posix';
 import { HttpModule } from '@nestjs/axios';
-
+import { SocketModule } from './socket/socket.module';
 //KeyCloak
 
 @Module({
   imports: [
     HttpModule,
+    SocketModule,
     MongooseModule.forRoot(
       'mongodb+srv://admin:muzumsu@cluster0.t49jrqs.mongodb.net/test',
       { dbname: 'WinMeetDB' },
@@ -35,8 +36,8 @@ import { HttpModule } from '@nestjs/axios';
       transport: {
         host: 'smtp.gmail.com',
         auth: {
-          user: '',
-          pass: '',
+          user: 'winmeet.mail@gmail.com',
+          pass: 'aatattriuompblrs',
         },
       },
       template: {
@@ -57,4 +58,4 @@ import { HttpModule } from '@nestjs/axios';
   ],
   providers: [AppService, EventService, UserService],
 })
-export class AppModule {}
+export class AppModule { }

@@ -9,15 +9,11 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { UserInterface } from 'src/interface/user.interface';
 @Injectable()
 export class UserService {
-  constructor(@InjectModel('User') private userModel: Model<UserInterface>) {}
+  constructor(@InjectModel('User') private userModal: Model<UserInterface>) {}
 
   //creating event
   async createUser(createUserDto: CreateUserDto): Promise<UserInterface> {
-    const newUser = await new this.userModel(createUserDto);
-
-    // this.sendMail(createEventDto.participants, createEventDto);
+    const newUser = await new this.userModal(createUserDto);   
     return newUser.save();
   }
-
-  //read all events
 }

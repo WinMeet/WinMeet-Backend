@@ -2,7 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema()
 export class Event {
-  @Prop()
+  @Prop({ required: true })
+  eventOwner: string;
+
+  @Prop({ required: true })
   eventName: string;
 
   @Prop()
@@ -11,14 +14,44 @@ export class Event {
   @Prop()
   location: string;
 
-  @Prop()
+  @Prop({ required: true })
   eventStartDate: Date;
 
-  @Prop()
+  @Prop({ required: true })
   eventEndDate: Date;
 
   @Prop()
+  eventStartDate2: Date;
+
+  @Prop()
+  eventEndDate2: Date;
+
+  @Prop()
+  eventStartDate3: Date;
+
+  @Prop()
+  eventEndDate3: Date;
+
+  @Prop({ default: 0 })
+  eventVote1: number;
+
+  @Prop({ default: 0 })
+  eventVote2: number;
+
+  @Prop({ default: 0 })
+  eventVote3: number;
+
+  @Prop()
+  eventVoteDuration: Date;
+
+  @Prop()
   participants: string[];
+
+  @Prop({ default: true })
+  isPending: boolean;
+
+  @Prop()
+  voters: string[];
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

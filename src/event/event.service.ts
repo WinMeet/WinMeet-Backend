@@ -7,6 +7,10 @@ import { UpdateEventDto } from 'src/dto/update-event.dto';
 import { EventSchema } from 'src/schema/event.schema';
 
 import { MailerService } from '@nestjs-modules/mailer';
+
+const schedule = require('node-schedule');
+
+
 @Injectable()
 export class EventService {
   constructor(
@@ -14,24 +18,34 @@ export class EventService {
     private mailService: MailerService,
   ) {}
 
-  async sendMail(participants: string[], superHero: any) {
+  async sendMail(participants: string[], dto: UpdateEventDto, templateName: string) {
     for (var i = 0; i < participants.length; i++) {
       await this.mailService.sendMail({
         to: participants[i],
-        from: 'emredurmus06@hotmail.com',
+        from: 'xyz@hotmail.com',
         subject: 'WinMeet Template',
-        template: 'superhero',
+        template: templateName,
         context: {
-          superHero: superHero,
+          superhero: dto,
         },
       });
+
       //return response;
     }
   }
   //creating event
   async createEvent(createEventDto: CreateEventDto): Promise<EventInterface> {
     const newEvent = await new this.eventModel(createEventDto);
-    // this.sendMail(createEventDto.participants, createEventDto);
+
+    if (newEvent.eventEndDate2 == null && newEvent.eventEndDate3 == null) {
+      newEvent.isPending = false;
+    }
+
+    this.sendMail(createEventDto.participants, createEventDto, 'invitation');
+
+    var job = schedule.scheduleJob(newEvent.eventVoteDuration, () =>  {
+      this.sendMail(createEventDto.participants, createEventDto, 'invitation');});  
+
     return newEvent.save();
   }
 
@@ -46,13 +60,70 @@ export class EventService {
     return eventData;
   }
 
+  async getPendingEvents(): Promise<EventInterface[]> {
+    const eventData = await this.eventModel.find({ isPending: true });
+
+    if (!eventData || eventData.length === 0) {
+      return [];
+    }
+
+    return eventData;
+  }
+
   //search event by id
-  async findByid(eventId: string): Promise<EventInterface> {
-    const existingEvent = await this.eventModel.findById(eventId);
+  async findByuserEmail(eventOwn: string): Promise<EventInterface[]> {
+    const existingEvent = await this.eventModel.find({ eventOwner: eventOwn });
     if (!existingEvent) {
       throw new NotFoundException('Event not found');
     }
     return existingEvent;
+  }
+
+  async findByparticipants(eventOwn: string): Promise<EventInterface[]> {
+    const existingEvent = await this.eventModel.find({
+      participants: { $in: [eventOwn] },
+    });
+    if (!existingEvent) {
+      throw new NotFoundException('Event not found');
+    }
+    return existingEvent;
+  }
+
+  async findByIdAndUpdateVote(
+    eventId: string,
+    voterArray: string,
+    fieldToIncrement: number,
+  ) {
+    let field;
+
+    switch (fieldToIncrement) {
+      case 0:
+        field = 'eventVote1';
+        break;
+      case 1:
+        field = 'eventVote2';
+        break;
+      case 2:
+        field = 'eventVote3';
+        break;
+      default:
+        throw new NotFoundException('Invalid fieldToIncrement value');
+    }
+
+    const result = await this.eventModel.findByIdAndUpdate(
+      eventId,
+      {
+        $push: { voters: voterArray },
+        $inc: { [field]: 1 },
+      },
+      { new: true },
+    );
+
+    if (!result) {
+      throw new NotFoundException('Event not found');
+    }
+
+    return result;
   }
 
   //delete event by id
@@ -61,6 +132,9 @@ export class EventService {
     if (!deletedEvent) {
       throw new NotFoundException('Event not found');
     }
+
+    await this.sendMail(deletedEvent.participants, deletedEvent, 'delete');
+
 
     return deletedEvent;
   }
@@ -88,7 +162,27 @@ export class EventService {
     if (!existingEvent) {
       throw new NotFoundException('Event not found');
     }
-
     return existingEvent;
   }
+
+
+  async removeParticipant(eventId: string, updateData: UpdateEventDto): Promise <any> {
+    
+    
+  
+    
+
+    await this.sendMail([updateData.eventOwner], updateData, 'notice_owner');
+
+  
+    /*const eventOwner = await this.eventModel.findById(eventId).select('eventOwner');
+    const eventName = await this.eventModel.findById(eventId).select('eventName');
+
+
+    existingEvent.eventOwner = eventOwner?.eventOwner?.toString() || '';
+    existingEvent.eventName = eventName?.eventName?.toString() || '';*/
+
+    return updateData;
+  }
+  
 }
