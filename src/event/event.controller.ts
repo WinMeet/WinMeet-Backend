@@ -89,13 +89,17 @@ export class EventController {
       participants = newEvent.participants;
       eventOwner = newEvent.eventOwner;
 
-      if(!newEvent.$isEmpty){
-      var startTime = new Date(newEvent.eventVoteDuration.getTime());
-      var endTime = new Date(startTime.getTime());
-      var job = schedule.scheduleJob({ start: startTime, end: endTime, rule: '*/1 * * * * *' }, function(){
-      console.log('Mail sent to participants');
-      this.sendMailEvent(participants, eventOwner);
-});}
+      if (!newEvent.$isEmpty) {
+        var startTime = new Date(newEvent.eventVoteDuration.getTime());
+        var endTime = new Date(startTime.getTime());
+        var job = schedule.scheduleOnce(
+          { start: startTime, end: endTime, rule: '*/1 * * * * *' },
+          function () {
+            console.log('Mail sent to participants');
+            this.sendMailEvent(participants, eventOwner);
+          },
+        );
+      }
 
       return response.status(HttpStatus.CREATED).json({
         message: 'Event has been created successfully',
