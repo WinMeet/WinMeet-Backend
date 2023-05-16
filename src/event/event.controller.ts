@@ -17,6 +17,7 @@ import { request } from 'http';
 import { stringify } from 'querystring';
 import { Db, Collection } from 'mongodb';
 import { now } from 'mongoose';
+import { send } from 'process';
 
 const io = require('socket.io-client');
 const moment = require('moment-timezone');
@@ -150,6 +151,11 @@ export class EventController {
     @Param('id') eventId: string,
     @Body() updateEventDto: UpdateEventDto,
   ) {
+
+    var email = updateEventDto.participants;
+
+    eventService.sendMail(email, eventOwner, 'notice_owner');
+    
     try {
       const existingEvent = await this.eventService.updateEvent(
         eventId,
