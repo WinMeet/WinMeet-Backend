@@ -173,7 +173,6 @@ export class EventController {
         updateEventDto        
       );
       console.log(existingEvent);
-      await this.eventService.sendMail(existingEvent.participants, existingEvent, 'notice_owner');
 
       return response.status(HttpStatus.OK).json({
         message: 'Event has been successfully updated',

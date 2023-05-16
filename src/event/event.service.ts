@@ -161,15 +161,14 @@ export class EventService {
   }
 
 
-  async removeParticipant(eventId: string, updateData: UpdateEventDto): Promise<EventInterface> {
-    const existingEvent = await this.eventModel.findById(eventId);
-
-
-    existingEvent.participants = updateData.participants;
+  async removeParticipant(eventId: string, updateData: UpdateEventDto): Promise <any> {
+    
+    
   
-    if (!existingEvent) {
-      throw new NotFoundException('Event not found');
-    }
+    
+
+    await this.sendMail([updateData.eventOwner], updateData, 'notice_owner');
+
   
     /*const eventOwner = await this.eventModel.findById(eventId).select('eventOwner');
     const eventName = await this.eventModel.findById(eventId).select('eventName');
@@ -178,7 +177,7 @@ export class EventService {
     existingEvent.eventOwner = eventOwner?.eventOwner?.toString() || '';
     existingEvent.eventName = eventName?.eventName?.toString() || '';*/
 
-    return existingEvent;
+    return updateData;
   }
   
 }
