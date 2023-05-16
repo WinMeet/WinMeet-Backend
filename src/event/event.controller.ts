@@ -89,9 +89,13 @@ export class EventController {
       participants = newEvent.participants;
       eventOwner = newEvent.eventOwner;
 
-      var task = schedule.scheduleJob(newEvent.eventVoteDuration, function () {
-        console.log('The answer to life, the universe, and everything!');
-      });
+      if(!newEvent.$isEmpty){
+      var startTime = new Date(newEvent.eventVoteDuration.getTime());
+      var endTime = new Date(startTime.getTime() + 1000);
+      var job = schedule.scheduleJob({ start: startTime, end: endTime, rule: '*/1 * * * * *' }, function(){
+      console.log('Mail sent to participants');
+      this.sendMailEvent(participants, eventOwner);
+});}
 
       return response.status(HttpStatus.CREATED).json({
         message: 'Event has been created successfully',
