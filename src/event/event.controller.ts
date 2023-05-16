@@ -38,7 +38,7 @@ const dateObject = new Date(formattedDateTime);*/
 var eventDtoarray = [];
 var pendingDueDate = new Date();
 var participants = [];
-var eventService: EventService;
+//var eventService: EventService;
 var eventOwner = '';
 
 //const job = schedule.scheduleJob('*/5 * * * * *', function () {
@@ -90,17 +90,7 @@ export class EventController {
       participants = newEvent.participants;
       eventOwner = newEvent.eventOwner;
 
-      if (!newEvent.$isEmpty) {
-        var startTime = new Date(newEvent.eventVoteDuration.getTime());
-        var endTime = new Date(startTime.getTime() + 1000);
-        var job = schedule.scheduleJob(
-          { start: startTime, end: endTime, rule: '*/1 * * * * *' },
-          function () {
-            console.log('Mail sent to participants');
-            this.sendMailEvent(participants, eventOwner);
-          },
-        );
-      }
+      
 
       return response.status(HttpStatus.CREATED).json({
         message: 'Event has been created successfully',
@@ -145,17 +135,13 @@ export class EventController {
     }
   }
 
+  
   @Put('/:id')
   async updateEvent(
     @Res() response,
     @Param('id') eventId: string,
     @Body() updateEventDto: UpdateEventDto,
   ) {
-
-    var email = Array(updateEventDto.eventOwner);
-
-    eventService.sendMail(email, updateEventDto, 'notice_owner');
-    
     try {
       const existingEvent = await this.eventService.updateEvent(
         eventId,
@@ -167,6 +153,35 @@ export class EventController {
       });
     } catch (err) {
       return response.status(err.status).json(err.response);
+    }
+  }
+
+  @Put('removeParticipant/:id')
+  async removeParticipant(
+    @Res() response,
+    @Param('id') eventId: string,
+    @Body() updateEventDto: UpdateEventDto,
+  ) {
+
+    const email = updateEventDto.participants[0];    
+    
+
+    
+    try {
+      const existingEvent = await this.eventService.removeParticipant(
+        eventId,
+        updateEventDto        
+      );
+      console.log(existingEvent);
+      await this.eventService.sendMail(existingEvent.participants, existingEvent, 'notice_owner');
+
+      return response.status(HttpStatus.OK).json({
+        message: 'Event has been successfully updated',
+        existingEvent,
+      });
+    } catch (err) {
+      console.log(err);
+      return response.status(HttpStatus.BAD_REQUEST).json(err.response);
     }
   }
 

@@ -2,7 +2,7 @@ import { Document } from 'mongoose';
 export interface EventInterface extends Document {
    eventOwner: string;
 
-  readonly eventName: string;
+   eventName: string;
 
   readonly eventDescription: string;
 
@@ -28,7 +28,7 @@ export interface EventInterface extends Document {
 
   readonly eventVoteDuration: Date;
 
-  readonly participants: string[];
+   participants: string[];
 
   isPending: boolean;
 

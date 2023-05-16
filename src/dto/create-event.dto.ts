@@ -12,7 +12,7 @@ export class CreateEventDto {
   eventOwner: string;
 
   @IsString()
-  @MaxLength(30)
+  @MaxLength(100)
   @IsNotEmpty()
   eventName: string;
 
