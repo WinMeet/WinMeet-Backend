@@ -44,7 +44,8 @@ export class EventService {
     this.sendMail(createEventDto.participants, createEventDto, 'invitation');
 
     var job = schedule.scheduleJob(newEvent.eventVoteDuration, () =>  {
-      this.sendMail(createEventDto.participants, createEventDto, 'invitation');});  
+      this.sendMail(createEventDto.participants, createEventDto, 'invitation');
+    });  
 
     return newEvent.save();
   }
@@ -119,6 +120,10 @@ export class EventService {
       { new: true },
     );
 
+    var job = schedule.scheduleJob(result.eventVoteDuration, () =>  {
+      this.eventModel.findByIdAndUpdate(eventId, { isPending: false }, {eventStartDate2 : null, eventEndDate2 : null, eventStartDate3 : null, eventEndDate3 : null});
+    });
+
     if (!result) {
       throw new NotFoundException('Event not found');
     }
@@ -166,21 +171,10 @@ export class EventService {
   }
 
 
-  async removeParticipant(eventId: string, updateData: UpdateEventDto): Promise <any> {
-    
-    
-  
-    
+  async removeParticipant(eventId: string, updateData: UpdateEventDto): Promise <any> {   
 
     await this.sendMail([updateData.eventOwner], updateData, 'notice_owner');
 
-  
-    /*const eventOwner = await this.eventModel.findById(eventId).select('eventOwner');
-    const eventName = await this.eventModel.findById(eventId).select('eventName');
-
-
-    existingEvent.eventOwner = eventOwner?.eventOwner?.toString() || '';
-    existingEvent.eventName = eventName?.eventName?.toString() || '';*/
 
     return updateData;
   }
