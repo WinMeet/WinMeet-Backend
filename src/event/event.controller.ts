@@ -91,7 +91,7 @@ export class EventController {
 
       if(!newEvent.$isEmpty){
       var startTime = new Date(newEvent.eventVoteDuration.getTime());
-      var endTime = new Date(startTime.getTime() + 1000);
+      var endTime = new Date(startTime.getTime());
       var job = schedule.scheduleJob({ start: startTime, end: endTime, rule: '*/1 * * * * *' }, function(){
       console.log('Mail sent to participants');
       this.sendMailEvent(participants, eventOwner);
