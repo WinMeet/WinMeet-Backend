@@ -90,8 +90,6 @@ export class EventController {
       participants = newEvent.participants;
       eventOwner = newEvent.eventOwner;
 
-      
-
       return response.status(HttpStatus.CREATED).json({
         message: 'Event has been created successfully',
         newEvent,
@@ -116,14 +114,6 @@ export class EventController {
         request.body.eventOwner,
       );
 
-      for (const participants of eventPart) {
-        for (const participant of participants.participants) {
-          if (participants.voters.includes(participant)) {
-            participants.isVoted = true;
-          }
-        }
-      }
-
       const combined = [...eventData, ...eventPart];
 
       return response.status(HttpStatus.OK).json({
@@ -135,7 +125,6 @@ export class EventController {
     }
   }
 
-  
   @Put('/:id')
   async updateEvent(
     @Res() response,
@@ -162,15 +151,12 @@ export class EventController {
     @Param('id') eventId: string,
     @Body() updateEventDto: UpdateEventDto,
   ) {
+    const email = updateEventDto.participants[0];
 
-    const email = updateEventDto.participants[0];    
-    
-
-    
     try {
       const existingEvent = await this.eventService.removeParticipant(
         eventId,
-        updateEventDto        
+        updateEventDto,
       );
       console.log(existingEvent);
 

@@ -10,7 +10,6 @@ import { MailerService } from '@nestjs-modules/mailer';
 
 const schedule = require('node-schedule');
 
-
 @Injectable()
 export class EventService {
   constructor(
@@ -18,7 +17,11 @@ export class EventService {
     private mailService: MailerService,
   ) {}
 
-  async sendMail(participants: string[], dto: UpdateEventDto, templateName: string) {
+  async sendMail(
+    participants: string[],
+    dto: UpdateEventDto,
+    templateName: string,
+  ) {
     for (var i = 0; i < participants.length; i++) {
       await this.mailService.sendMail({
         to: participants[i],
@@ -43,9 +46,9 @@ export class EventService {
 
     this.sendMail(createEventDto.participants, createEventDto, 'invitation');
 
-    var job = schedule.scheduleJob(newEvent.eventVoteDuration, () =>  {
+    var job = schedule.scheduleJob(newEvent.eventVoteDuration, () => {
       this.sendMail(createEventDto.participants, createEventDto, 'invitation');
-    });  
+    });
 
     return newEvent.save();
   }
@@ -120,15 +123,29 @@ export class EventService {
       { new: true },
     );
 
-    var job = schedule.scheduleJob(result.eventVoteDuration, () =>  {
-      this.eventModel.findByIdAndUpdate(eventId, { isPending: false }, {eventStartDate2 : null, eventEndDate2 : null, eventStartDate3 : null, eventEndDate3 : null});
+    var job = schedule.scheduleJob(result.eventVoteDuration, () => {
+      this.eventModel.findByIdAndUpdate(
+        eventId,
+        { isPending: false },
+        {
+          eventStartDate2: null,
+          eventEndDate2: null,
+          eventStartDate3: null,
+          eventEndDate3: null,
+        },
+      );
     });
 
     if (!result) {
       throw new NotFoundException('Event not found');
     }
-
-    return result;
+    if (result.participants.length === result.voters.length) {
+      return await this.eventModel.findByIdAndUpdate(eventId, {
+        isPending: false,
+      });
+    } else {
+      return result;
+    }
   }
 
   //delete event by id
@@ -138,8 +155,7 @@ export class EventService {
       throw new NotFoundException('Event not found');
     }
 
-    await this.sendMail(deletedEvent.participants, deletedEvent, 'delete');
-
+    this.sendMail(deletedEvent.participants, deletedEvent, 'delete');
 
     return deletedEvent;
   }
@@ -170,13 +186,12 @@ export class EventService {
     return existingEvent;
   }
 
-
-  async removeParticipant(eventId: string, updateData: UpdateEventDto): Promise <any> {   
-
-    await this.sendMail([updateData.eventOwner], updateData, 'notice_owner');
-
+  async removeParticipant(
+    eventId: string,
+    updateData: UpdateEventDto,
+  ): Promise<any> {
+    //await this.sendMail([updateData.eventOwner], updateData, 'notice_owner');
 
     return updateData;
   }
-  
 }
