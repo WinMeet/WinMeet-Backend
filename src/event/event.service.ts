@@ -39,11 +39,15 @@ export class EventService {
     if (newEvent.eventEndDate2 == null && newEvent.eventEndDate3 == null) {
       newEvent.isPending = false;
     }
+    console.log('Event id', newEvent.id);
 
     this.sendMail(createEventDto.participants, createEventDto, 'invitation');
 
     var job = schedule.scheduleJob(newEvent.eventVoteDuration, () => {
-      this.sendMail(createEventDto.participants, createEventDto, 'invitation');
+      if (newEvent.isPending) {
+        this.sendMail(createEventDto.participants, createEventDto, 'delete');
+        this.finalizeMeetingDate(newEvent.id);
+      }
     });
 
     return newEvent.save();
@@ -119,26 +123,12 @@ export class EventService {
       { new: true },
     );
 
-    var job = schedule.scheduleJob(result.eventVoteDuration, () => {
-      this.eventModel.findByIdAndUpdate(
-        eventId,
-        { isPending: false },
-        {
-          eventStartDate2: null,
-          eventEndDate2: null,
-          eventStartDate3: null,
-          eventEndDate3: null,
-        },
-      );
-    });
-
     if (!result) {
       throw new NotFoundException('Event not found');
     }
     if (result.participants.length === result.voters.length) {
-      return await this.eventModel.findByIdAndUpdate(eventId, {
-        isPending: false,
-      });
+      this.sendMail(result.participants, result, 'delete');
+      return await this.finalizeMeetingDate(result.id);
     } else {
       return result;
     }
@@ -210,5 +200,35 @@ export class EventService {
     await this.sendMail([event.eventOwner], event, 'notice_owner');
 
     return event;
+  }
+
+  async finalizeMeetingDate(eventId) {
+    const event = await this.eventModel.findById(eventId);
+    const votes = [event.eventVote1, event.eventVote2, event.eventVote3];
+    const max = Math.max(...votes);
+    const maxIndex = votes.indexOf(max);
+    switch (maxIndex) {
+      case 1:
+        event.eventStartDate = event.eventStartDate2;
+        event.eventEndDate = event.eventEndDate2;
+        break;
+      case 2:
+        event.eventStartDate = event.eventStartDate3;
+        event.eventEndDate = event.eventEndDate3;
+        break;
+    }
+    return await this.eventModel.findByIdAndUpdate(
+      eventId,
+      {
+        isPending: false,
+        eventStartDate: event.eventStartDate,
+        eventEndDate: event.eventEndDate,
+        eventStartDate2: null,
+        eventEndDate2: null,
+        eventStartDate3: null,
+        eventEndDate3: null,
+      },
+      { new: true },
+    );
   }
 }
