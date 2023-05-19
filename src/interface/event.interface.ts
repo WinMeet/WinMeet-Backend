@@ -8,6 +8,10 @@ export interface EventInterface extends Document {
 
   readonly location: string;
 
+  stringEventStartDate: string;
+
+  stringEventEndDate: string;
+
   eventStartDate: Date;
 
   eventEndDate: Date;

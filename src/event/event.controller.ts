@@ -13,61 +13,6 @@ import {
 import { CreateEventDto } from 'src/dto/create-event.dto';
 import { UpdateEventDto } from 'src/dto/update-event.dto';
 import { EventService } from './event.service';
-import { request } from 'http';
-import { stringify } from 'querystring';
-import { Db, Collection } from 'mongodb';
-import { now } from 'mongoose';
-import { send } from 'process';
-
-const io = require('socket.io-client');
-const moment = require('moment-timezone');
-const socket = io('http://localhost:3002');
-const schedule = require('node-schedule');
-
-// Set the desired timezone (e.g., Istanbul)
-const desiredTimezone = 'Europe/Istanbul';
-
-// Create a new moment object with the current datetime
-const currentDateTime = new Date();
-
-/*// Convert the datetime to the desired timezone
-const timezoneDateTime = currentDateTime.tz(desiredTimezone);
-const formattedDateTime = timezoneDateTime.toISOString();
-const dateObject = new Date(formattedDateTime);*/
-
-var eventDtoarray = [];
-var pendingDueDate = new Date();
-var participants = [];
-//var eventService: EventService;
-var eventOwner = '';
-
-//const job = schedule.scheduleJob('*/5 * * * * *', function () {
-/*console.log('The answer to life, the universe, and everything!');
-    console.log(currentDateTime);
-    var Superhero: any;
-
-    if (eventDtoarray.length > 0) {
-      if (currentDateTime === pendingDueDate) {
-        fetch('/sendMail', {
-            method: 'POST',
-           
-            body: JSON.stringify({
-                participants: participants,
-                superHero: Superhero,
-            }),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((response) => {
-            
-            })
-            .catch((error) => {
-              
-            });
-      }
-    }
-  });*/
 
 @Controller('createMeeting')
 export class EventController {
@@ -84,11 +29,6 @@ export class EventController {
   async createEvent(@Res() response, @Body() createEventDto: CreateEventDto) {
     try {
       const newEvent = await this.eventService.createEvent(createEventDto);
-
-      eventDtoarray = [...eventDtoarray, newEvent];
-      pendingDueDate = newEvent.eventVoteDuration;
-      participants = newEvent.participants;
-      eventOwner = newEvent.eventOwner;
 
       return response.status(HttpStatus.CREATED).json({
         message: 'Event has been created successfully',

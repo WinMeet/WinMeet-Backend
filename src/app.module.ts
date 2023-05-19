@@ -58,4 +58,4 @@ import { SocketModule } from './socket/socket.module';
   ],
   providers: [AppService, EventService, UserService],
 })
-export class AppModule { }
+export class AppModule {}

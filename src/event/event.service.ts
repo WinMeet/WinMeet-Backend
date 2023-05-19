@@ -5,6 +5,7 @@ import { EventInterface } from 'src/interface/event.interface';
 import { CreateEventDto } from 'src/dto/create-event.dto';
 import { UpdateEventDto } from 'src/dto/update-event.dto';
 import { EventSchema } from 'src/schema/event.schema';
+import * as moment from 'moment';
 
 import { MailerService } from '@nestjs-modules/mailer';
 
@@ -22,14 +23,12 @@ export class EventService {
       await this.mailService.sendMail({
         to: participants[i],
         from: 'xyz@hotmail.com',
-        subject: 'WinMeet Template',
+        subject: 'WinMeet Meeting Update',
         template: templateName,
         context: {
           superhero: dto,
         },
       });
-
-      //return response;
     }
   }
   //creating event
@@ -43,10 +42,14 @@ export class EventService {
 
     this.sendMail(createEventDto.participants, createEventDto, 'invitation');
 
-    var job = schedule.scheduleJob(newEvent.eventVoteDuration, () => {
+    var job = schedule.scheduleJob(newEvent.eventVoteDuration, async () => {
       if (newEvent.isPending) {
-        this.sendMail(createEventDto.participants, createEventDto, 'delete');
-        this.finalizeMeetingDate(newEvent.id);
+        const result = await this.finalizeMeetingDate(newEvent.id);
+        const participantsAndOwner = [
+          ...result.participants,
+          result.eventOwner,
+        ];
+        this.sendMail(participantsAndOwner, result, 'scheduled');
       }
     });
 
@@ -127,8 +130,13 @@ export class EventService {
       throw new NotFoundException('Event not found');
     }
     if (result.participants.length === result.voters.length) {
-      this.sendMail(result.participants, result, 'delete');
-      return await this.finalizeMeetingDate(result.id);
+      const response = await this.finalizeMeetingDate(result.id);
+      const participantsAndOwner = [
+        ...response.participants,
+        response.eventOwner,
+      ];
+      this.sendMail(participantsAndOwner, response, 'scheduled');
+      return response;
     } else {
       return result;
     }
@@ -217,18 +225,29 @@ export class EventService {
         event.eventEndDate = event.eventEndDate3;
         break;
     }
-    return await this.eventModel.findByIdAndUpdate(
-      eventId,
-      {
-        isPending: false,
-        eventStartDate: event.eventStartDate,
-        eventEndDate: event.eventEndDate,
-        eventStartDate2: null,
-        eventEndDate2: null,
-        eventStartDate3: null,
-        eventEndDate3: null,
-      },
-      { new: true },
-    );
+    const result = await this.eventModel
+      .findByIdAndUpdate(
+        eventId,
+        {
+          isPending: false,
+          eventStartDate: event.eventStartDate,
+          eventEndDate: event.eventEndDate,
+          eventStartDate2: null,
+          eventEndDate2: null,
+          eventStartDate3: null,
+          eventEndDate3: null,
+        },
+        { new: true },
+      )
+      .lean();
+    result.stringEventStartDate = this.formatDate(result.eventStartDate);
+    result.stringEventEndDate = this.formatDate(result.eventEndDate);
+    return result;
+  }
+  formatDate(date: Date): string {
+    const formattedDate = moment(date)
+      .utcOffset('+03:00')
+      .format('ddd MMM D YYYY HH:mm [UTC]Z');
+    return formattedDate.replace('GMT', 'UTC');
   }
 }
