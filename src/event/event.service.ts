@@ -17,11 +17,7 @@ export class EventService {
     private mailService: MailerService,
   ) {}
 
-  async sendMail(
-    participants: string[],
-    dto: UpdateEventDto,
-    templateName: string,
-  ) {
+  async sendMail(participants: string[], dto: any, templateName: string) {
     for (var i = 0; i < participants.length; i++) {
       await this.mailService.sendMail({
         to: participants[i],
@@ -150,11 +146,13 @@ export class EventService {
 
   //delete event by id
   async deleteEvent(eventId: string): Promise<EventInterface> {
-    const deletedEvent = await this.eventModel.findByIdAndDelete(eventId);
+    const deletedEvent = await this.eventModel
+      .findByIdAndDelete(eventId)
+      .lean();
     if (!deletedEvent) {
       throw new NotFoundException('Event not found');
     }
-
+    console.log('participants' + deletedEvent.participants);
     this.sendMail(deletedEvent.participants, deletedEvent, 'delete');
 
     return deletedEvent;
@@ -175,23 +173,42 @@ export class EventService {
     eventId: string,
     updateData: UpdateEventDto,
   ): Promise<EventInterface> {
-    const existingEvent = await this.eventModel.findByIdAndUpdate(
-      eventId,
-      updateData,
-      { new: true },
+    const event = await this.eventModel.findById(eventId);
+
+    let uniqueNewParticipants = updateData.participants.filter(
+      (participant) => !event.participants.includes(participant),
     );
+    console.log(uniqueNewParticipants);
+
+    updateData.participants = [...event.participants, ...uniqueNewParticipants];
+
+    const existingEvent = await this.eventModel
+      .findByIdAndUpdate(eventId, updateData, { new: true })
+      .lean();
+
+    this.sendMail(uniqueNewParticipants, existingEvent, 'invitation');
+
     if (!existingEvent) {
       throw new NotFoundException('Event not found');
     }
+
     return existingEvent;
   }
 
   async removeParticipant(
     eventId: string,
-    updateData: UpdateEventDto,
+    updateEventDto: UpdateEventDto,
   ): Promise<any> {
-    //await this.sendMail([updateData.eventOwner], updateData, 'notice_owner');
+    const event = await this.eventModel.findById(eventId).lean();
+    const result = event.participants.filter(
+      (item) => !updateEventDto.participants.includes(item),
+    );
+    await this.eventModel.findByIdAndUpdate(eventId, {
+      participants: result,
+    });
+    event.participants = updateEventDto.participants;
+    await this.sendMail([event.eventOwner], event, 'notice_owner');
 
-    return updateData;
+    return event;
   }
 }

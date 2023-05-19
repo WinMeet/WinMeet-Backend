@@ -136,7 +136,7 @@ export class EventController {
         eventId,
         updateEventDto,
       );
-      return response.status(HttpStatus.OK).json({
+      return response.status(HttpStatus.ACCEPTED).json({
         message: 'Event has been successfully updated',
         existingEvent,
       });
@@ -151,8 +151,6 @@ export class EventController {
     @Param('id') eventId: string,
     @Body() updateEventDto: UpdateEventDto,
   ) {
-    const email = updateEventDto.participants[0];
-
     try {
       const existingEvent = await this.eventService.removeParticipant(
         eventId,
