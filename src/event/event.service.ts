@@ -19,16 +19,18 @@ export class EventService {
   ) {}
 
   async sendMail(participants: string[], dto: any, templateName: string) {
-    for (var i = 0; i < participants.length; i++) {
-      await this.mailService.sendMail({
-        to: participants[i],
-        from: 'xyz@hotmail.com',
-        subject: 'WinMeet Meeting Update',
-        template: templateName,
-        context: {
-          superhero: dto,
-        },
-      });
+    if (participants.length > 0) {
+      for (var i = 0; i < participants.length; i++) {
+        await this.mailService.sendMail({
+          to: participants[i],
+          from: 'xyz@hotmail.com',
+          subject: 'WinMeet Meeting Update',
+          template: templateName,
+          context: {
+            superhero: dto,
+          },
+        });
+      }
     }
   }
   //creating event
