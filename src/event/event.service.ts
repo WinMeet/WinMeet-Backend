@@ -45,13 +45,15 @@ export class EventService {
     this.sendMail(createEventDto.participants, createEventDto, 'invitation');
 
     var job = schedule.scheduleJob(newEvent.eventVoteDuration, async () => {
-      if (newEvent.isPending) {
+      if (newEvent != null && newEvent.isPending) {
         const result = await this.finalizeMeetingDate(newEvent.id);
-        const participantsAndOwner = [
-          ...result.participants,
-          result.eventOwner,
-        ];
-        this.sendMail(participantsAndOwner, result, 'scheduled');
+        if (result != null) {
+          const participantsAndOwner = [
+            ...result.participants,
+            result.eventOwner,
+          ];
+          this.sendMail(participantsAndOwner, result, 'scheduled');
+        }
       }
     });
 
@@ -214,6 +216,9 @@ export class EventService {
 
   async finalizeMeetingDate(eventId) {
     const event = await this.eventModel.findById(eventId);
+    if (event == null) {
+      return;
+    }
     const votes = [event.eventVote1, event.eventVote2, event.eventVote3];
     const max = Math.max(...votes);
     const maxIndex = votes.indexOf(max);
